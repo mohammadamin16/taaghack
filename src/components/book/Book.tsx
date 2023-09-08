@@ -18,7 +18,7 @@ export const Book: React.FC<Props> = (props) => {
       <p>{props.book.price}</p>
       <div>
         {[1, 2, 3, 4, 5].map((number) => (
-          <Star is_full={number < props.book.rating} />
+          <Star key={number} is_full={number < props.book.rating} />
         ))}
       </div>
     </div>
