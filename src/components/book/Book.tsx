@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { ApiBook } from "../../core/types";
-import styles from "./styles.module.css";
+import styles from "./book.module.css";
 import { Star } from "../star/Star";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   book: ApiBook;
+  showMoreButton?: boolean;
 }
 
 export const Book: React.FC<Props> = (props) => {
+  const navigate = useNavigate();
+  const clickHandler = useCallback(() => {
+    navigate(`/book/${props.book.id}`);
+  }, [props.book]);
   return (
     <div className={styles.book}>
       <img className={styles.cover} src={props.book.coverUri} />
@@ -21,6 +27,9 @@ export const Book: React.FC<Props> = (props) => {
           <Star key={number} is_full={number < props.book.rating} />
         ))}
       </div>
+      {props.showMoreButton && (
+        <button onClick={clickHandler}>جزییات بیشتر</button>
+      )}
     </div>
   );
 };

@@ -11,8 +11,9 @@
   width: 80%;
   justify-content: space-between;
   align-items: first baseline;
+  height: 100vh;
   flex-direction: row;
   flex-wrap: wrap;
-  border: 1px solid brown;
+  /* border: 1px solid brown; */
 }
 
