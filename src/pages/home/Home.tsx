@@ -9,6 +9,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
+import { useInView } from "react-hook-inview";
 
 enum SortOptions {
   MostExpensive = "بیشترین قیمت",
@@ -17,7 +18,7 @@ enum SortOptions {
   LessPopular = "کمترین امتیاز",
 }
 export const Home = () => {
-  const { data, loading } = useTaaghche();
+  const { data, loading, loadNewBooks } = useTaaghche();
   const [selectedPublisher, setSelectedPublisher] = useState("");
   const [sorter, setSorter] = useState<SortOptions>(SortOptions.MostPopular);
 
@@ -33,7 +34,13 @@ export const Home = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedPublisher(event.target.value);
   };
+  const [ref, inView] = useInView();
 
+  useEffect(() => {
+    if (inView && !loading && data?.hasMore) {
+      loadNewBooks(data?.nextOffset);
+    }
+  }, [inView, data, loading]);
   return (
     <div className={styles.home}>
       <div className={styles.filter_row}>
@@ -57,13 +64,14 @@ export const Home = () => {
           <Select value={selectedPublisher} onChange={handleChange} label="Age">
             <MenuItem value="">No Filter!</MenuItem>
             {publishers.map((p) => (
-              <MenuItem value={p}>{p}</MenuItem>
+              <MenuItem key={p} value={p}>
+                {p}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
       </div>
       <div className={styles.book_list}>
-        {loading && <p>Loading...</p>}
         {data?.bookList.books
           .sort((b1, b2) => {
             switch (sorter) {
@@ -87,6 +95,7 @@ export const Home = () => {
           .map((b) => (
             <Book showMoreButton book={b} key={b.id} />
           ))}
+        {data?.hasMore && <div ref={ref}>Loading...</div>}
       </div>
     </div>
   );
