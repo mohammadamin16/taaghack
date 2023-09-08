@@ -9,7 +9,10 @@
 .book_list {
   display: flex;
   width: 80%;
+  justify-content: space-between;
+  align-items: first baseline;
   flex-direction: row;
   flex-wrap: wrap;
   border: 1px solid brown;
 }
+
