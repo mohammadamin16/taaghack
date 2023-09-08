@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { ApiResponse } from "../core/types";
 import { getBooks } from "../core/api";
+const LOCAL_STORAGE_KEY = "CACHED_DATA";
 
 export const useTaaghche = () => {
   const [data, setData] = useState<ApiResponse | undefined>();
@@ -36,10 +37,20 @@ export const useTaaghche = () => {
   };
 
   useEffect(() => {
+    if (data) localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+  }, [data]);
+
+  useEffect(() => {
     if (!navigator.onLine) {
       toast.error("You Are Offline!");
     }
-    loadBooks();
+
+    const cachedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    if (cachedData) {
+      setData(cachedData);
+    } else {
+      loadBooks();
+    }
     window.addEventListener("offline", offlineHandler);
     return () => {
       window.removeEventListener("offline", offlineHandler);
